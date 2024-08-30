@@ -31,7 +31,8 @@ function App() {
     setState("loading");
 
     // load the score
-    const mscz = await fetchBlob("/test.mscz");
+    const msczUrl = import.meta.env.BASE_URL + "test.mscz";
+    const mscz = await fetchBlob(msczUrl);
     const m = await loadMscz(mscz);
 
     // get metadata to display
