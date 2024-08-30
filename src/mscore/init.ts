@@ -63,6 +63,7 @@ const attachSoundFont = (
   const loadPromise = (async (): Promise<void> => {
     await score.setSoundFont(await soundfontPromise);
   })();
+  // @ts-ignore
   score[SOUND_FONT_LOADED] = loadPromise;
 };
 
@@ -70,8 +71,10 @@ const attachSoundFont = (
  * Ensure the SoundFont (.sf3) file is loaded to the mscore instance
  */
 export const soundFontReady = (score: WebMscore): Promise<void> => {
+  // @ts-ignore
   if (!score[SOUND_FONT_LOADED]) {
     attachSoundFont(score, loadSoundFont());
   }
+  // @ts-ignore
   return score[SOUND_FONT_LOADED] as Promise<void>;
 };

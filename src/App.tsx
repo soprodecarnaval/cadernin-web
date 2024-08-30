@@ -7,7 +7,7 @@ import WebMscore from "webmscore";
 import { Synthesizer } from "./mscore/synthesizer";
 import { Measures } from "./mscore/measures";
 import { PositionElement } from "webmscore/schemas";
-import { Rect, SVG } from "@svgdotjs/svg.js";
+// import { Rect, SVG } from "@svgdotjs/svg.js";
 
 type State = "idle" | "loading" | "playing" | "stopped";
 
