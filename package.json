@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
+    "predeploy": "vite build --base 'https://soprodecarnaval.github.io/cadernin-web/'",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
