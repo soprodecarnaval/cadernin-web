@@ -61,7 +61,6 @@ function App() {
   const [meta, setMeta] = useState<object | null>(null);
 
   const load = async (msczUrl: string) => {
-    if (state != "idle") return;
     setState("loading");
 
     // load the score
@@ -283,12 +282,6 @@ function App() {
         // xmlIdSeed: 0,
       });
 
-      console.log(window.verovio);
-      console.log(vrvToolkit);
-      console.log("Verovio options:", tk.getOptions());
-      // for the default values
-      console.log("Verovio options:", tk.getDefaultOptions());
-
       const svg = vrvToolkit.renderToSVG(1); // Render the first page as SVG
       // console.log({ svg });
 
@@ -386,16 +379,17 @@ function App() {
     abortCtrl?.abort();
   };
 
-  const buttonClick = () => {
+  const onClickLoad = async () => {
+    // load(import.meta.env.BASE_URL + "test.mscz");
+    try {
+      await load(document.getElementById("fileUrl").value.trim());
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const onClickTogglePlay = () => {
     switch (state) {
-      case "idle":
-        // load(import.meta.env.BASE_URL + "test.mscz");
-        load(document.getElementById("fileUrl").value.trim());
-        break;
-
-      case "loading":
-        break;
-
       case "stopped":
         play();
         break;
@@ -406,32 +400,9 @@ function App() {
     }
   };
 
-  const getButtonLabel = () => {
-    switch (state) {
-      case "idle":
-        return "Load mscz";
-
-      case "loading":
-        return "Loading...";
-
-      case "stopped":
-        return "Play";
-
-      case "playing":
-        return "Stop";
-    }
-  };
-
-  const buttonLabel = getButtonLabel();
-
   useEffect(() => {
     // const file = document.location.search.replace("?file=", "");
-    // https://github.com/soprodecarnaval/musicoteca/blob/main/public/collection/forr%C3%B3s/anuncia%C3%A7%C3%A3o/carnaval%20bh%202024%20-%20anuncia%C3%A7%C3%A3o/carnaval%20bh%202024%20-%20anuncia%C3%A7%C3%A3o.mscz
-    const file =
-      "https://cadern.in/collection/forr%C3%B3s/anuncia%C3%A7%C3%A3o/carnaval%20bh%202024%20-%20anuncia%C3%A7%C3%A3o/carnaval%20bh%202024%20-%20anuncia%C3%A7%C3%A3o.mscz";
-    if (file) {
-      // load(file);
-    }
+    document.getElementById("load-button")?.click();
   }, []);
 
   return (
@@ -440,21 +411,32 @@ function App() {
         File Url:{" "}
         <textarea
           id="fileUrl"
-          defaultValue="https://cadern.in/collection/forr%C3%B3s/anuncia%C3%A7%C3%A3o/carnaval%20bh%202024%20-%20anuncia%C3%A7%C3%A3o/carnaval%20bh%202024%20-%20anuncia%C3%A7%C3%A3o.mscz"
+          defaultValue="https://cadern.in/collection/axés/a luz de tiêta/carnaval bh 2024 - a luz de tiêta/carnaval bh 2024 - a luz de tiêta.mscz"
+          defaultValue="https://cadern.in/collection/forrós/anunciação/carnaval bh 2024 - anunciação/carnaval bh 2024 - anunciação.mscz"
+          defaultValue="https://cadern.in/collection/funks/se tá solteira/carnaval bh 2024 - se tá solteira/carnaval bh 2024 - se tá solteira.mscz"
           style={{ width: "100%", height: "100px" }}
         />
       </label>
-      <button disabled={state == "loading"} onClick={buttonClick}>
-        {buttonLabel}
+      <button
+        id="load-button"
+        disabled={state == "loading"}
+        onClick={onClickLoad}
+      >
+        {state === "loading" ? "Loading..." : "Load"}
       </button>
       {verovioBlobUrl && (
-        <button
-          onClick={() => {
-            createSongBook(mock);
-          }}
-        >
-          PDF
-        </button>
+        <>
+          <button onClick={onClickTogglePlay}>
+            {state === "playing" ? "Stop" : "Play"}
+          </button>
+          <button
+            onClick={() => {
+              createSongBook(mock);
+            }}
+          >
+            PDF
+          </button>
+        </>
       )}
       {state == "playing" ? (
         <div>Playback time: {playbackTime.toFixed(2)} s</div>
